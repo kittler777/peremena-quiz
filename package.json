@@ -1,1 +1,14 @@
-{"name":"peremena-quiz","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.js","test":"node --test test/*.test.js","build":"node build.js"},"engines":{"node":">=24"}}
+{
+  "name": "podpishi-eto",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js",
+    "build": "node build.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
