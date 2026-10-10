@@ -37,9 +37,10 @@ export function createGame(db, memes, options = {}) {
  function startRound(r,t){
   r.round++;r.phase='caption';r.deadline=t+r.settings.captionSeconds*1000;r.assignments={};r.entries=[];r.votes={};r.winners=[];r.resultReason='';
   const players=people(r).filter(p=>!p.left);
-  for(const p of players){const image=r.deck.shift();if(!image)fail('В банке закончились картинки. Вернитесь в лобби.',409);r.assignments[p.id]={image,caption:null,submitted:false};}
-  // Everybody will see these pictures when voting, so history covers the whole group.
-  for(const image of Object.values(r.assignments).map(a=>a.image))for(const p of people(r))exposure.run(p.device,image,t);
+  const image=r.deck.shift();if(!image)fail('В банке закончились картинки. Вернитесь в лобби.',409);
+  for(const p of players)r.assignments[p.id]={image,caption:null,submitted:false};
+  // One shared picture per round; remember its exposure for every participant.
+  for(const p of players)exposure.run(p.device,image,t);
  }
  function voting(r,t){
   r.entries=shuffle(Object.entries(r.assignments).filter(([,a])=>a.submitted&&a.caption).map(([owner,a])=>({id:id(),owner,image:a.image,caption:a.caption})));
@@ -65,7 +66,7 @@ export function createGame(db, memes, options = {}) {
   if(r.phase==='vote'&&(t>=r.deadline||eligibleVoters(r).every(p=>r.votes[p.id])))results(r,t);
  }
  function view(r,p,t){
-  const s={game:'caption-memes',code:r.code,phase:r.phase,round:r.round,matchId:r.matchId,settings:r.settings,hostId:r.hostId,me:p.id,revision:r.revision,serverTime:t,deadline:r.deadline,players:active(r).map(q=>({id:q.id,name:q.name,score:q.score,ready:q.ready,online:online(q,t)})),minPlayers:3,maxPlayers:12,maxRounds:Math.min(10,Math.floor(memes.length/Math.max(1,active(r).length)))};
+  const s={game:'caption-memes',code:r.code,phase:r.phase,round:r.round,matchId:r.matchId,settings:r.settings,hostId:r.hostId,me:p.id,revision:r.revision,serverTime:t,deadline:r.deadline,players:active(r).map(q=>({id:q.id,name:q.name,score:q.score,ready:q.ready,online:online(q,t)})),minPlayers:3,maxPlayers:12,maxRounds:Math.min(10,memes.length)};
   if(r.phase==='caption'){
    const a=r.assignments[p.id];s.image=a?safeImage(a.image):null;s.submitted=!!a?.submitted;s.myCaption=a?.caption??null;s.done=Object.values(r.assignments).filter(a=>a.submitted).length;s.total=Object.keys(r.assignments).length;
   }
@@ -105,7 +106,7 @@ export function createGame(db, memes, options = {}) {
     case 'ready':phase('lobby');if(typeof data.ready!=='boolean')fail('Некорректная готовность.');p.ready=data.ready;break;
     case 'start':{
      host();phase('lobby');const ps=active(r);if(ps.length<3)fail('Нужно хотя бы 3 игрока.');if(ps.some(q=>!online(q,t)||!q.ready))fail('Дождитесь подключения и готовности всех игроков.');
-     if(r.settings.rounds*ps.length>memes.length)fail('Для такого состава уменьшите количество раундов.');
+     if(r.settings.rounds>memes.length)fail('В банке недостаточно картинок для такого количества раундов.');
      r.participants=ps.map(q=>q.id);r.round=0;r.matchId=id();ps.forEach(q=>q.score=0);r.deck=chooseDeck(r);startRound(r,t);break;
     }
     case 'caption':{

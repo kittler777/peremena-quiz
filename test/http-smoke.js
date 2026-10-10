@@ -12,12 +12,12 @@ try{
  for(let round=1;round<=3;round++){
   const args={round:s.round,matchId:s.matchId};
   const privateStates=await Promise.all(users.map(u=>api('state',{},u)));
-  for(const privateState of privateStates){assert(privateState.image);assert(!seen.has(privateState.image.id));seen.add(privateState.image.id);}
+  assert(privateStates.every(p=>p.image));const image=privateStates[0].image.id;assert(privateStates.every(p=>p.image.id===image));assert(!seen.has(image));seen.add(image);
   await Promise.all(users.map((u,i)=>api('caption',{...args,caption:['Когда выходной оказался понедельником','Проверил холодильник второй раз: вдруг появилось','Я после слов «ещё один раунд»'][i]+' #'+i},u)));
-  s=await api('state',{},users[0]);assert.equal(s.phase,'vote');assert(s.cards.every(c=>!('author' in c)&&!('votes' in c)));
+  s=await api('state',{},users[0]);assert.equal(s.phase,'vote');assert(s.cards.every(c=>c.image.id===image&&!('author' in c)&&!('votes' in c)));
   await assert.rejects(api('vote',{...args,cardId:s.cards.find(c=>c.own).id},users[0]),e=>e.status===400);
   await Promise.all(users.map((u,i)=>api('vote',{...args,cardId:s.cards.find(c=>c.caption.endsWith('#'+((i+1)%3))).id},u)));
   s=await api('state',{},users[0]);assert.equal(s.phase,'results');assert(s.leaderboard.every(p=>p.score===round));s=await api('next',{round:s.round,matchId:s.matchId},users[0]);
  }
- assert.equal(s.phase,'finished');assert.equal(seen.size,9);s=await api('replay',{},users[0]);assert.equal(s.phase,'lobby');console.log(JSON.stringify({ok:true,rounds:3,players:3,uniquePictures:9,anonymity:true,selfVoteBlocked:true,final:true,replay:true}));
+ assert.equal(s.phase,'finished');assert.equal(seen.size,3);s=await api('replay',{},users[0]);assert.equal(s.phase,'lobby');console.log(JSON.stringify({ok:true,rounds:3,players:3,uniquePictures:3,sharedPictureEachRound:true,anonymity:true,selfVoteBlocked:true,final:true,replay:true}));
 }finally{for(const u of users)try{await api('leave',{},u);}catch{}}
