@@ -1,0 +1,11 @@
+import { createServer } from 'node:http';
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync, mkdirSync } from 'node:fs';
+import { createGame } from './core.js';
+import { QUESTIONS,TOPICS } from './questions.js';
+import { createTransport } from './transport.js';
+const dataPath=process.env.DATA_PATH||'./data';mkdirSync(dataPath,{recursive:true});
+const db=new DatabaseSync(dataPath+'/rooms.sqlite');db.exec('PRAGMA journal_mode=WAL;');
+const assets=Object.fromEntries(['index.html','style.css','app.js','config.js'].map(f=>[f,{body:readFileSync(new URL('./'+f,import.meta.url),'utf8'),type:f.endsWith('.html')?'text/html; charset=utf-8':f.endsWith('.css')?'text/css; charset=utf-8':'text/javascript; charset=utf-8'}]));
+const handle=createTransport(createGame(db,QUESTIONS,TOPICS),assets,process.env.PUBLIC_ORIGIN);
+createServer(async(req,res)=>{try{const host=req.headers.host||'localhost';const request=new Request('http://'+host+req.url,{method:req.method,headers:req.headers,...(['GET','HEAD'].includes(req.method)?{}:{body:req,duplex:'half'})});const response=await handle(request,req.socket.remoteAddress);res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()))}catch{res.writeHead(500);res.end('Server error')}}).listen(Number(process.env.PORT)||3000,'0.0.0.0',()=>console.log('Перемена запущена'));
