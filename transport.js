@@ -5,7 +5,7 @@ export function createTransport(game, assets, publicOrigin) {
   const allowed=!origin||origin===url.origin||origin==='https://kittler777.github.io'||origin===publicOrigin;
   const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer',...(allowed&&origin?{'Access-Control-Allow-Origin':origin,'Vary':'Origin'}:{})};
   if(request.method==='OPTIONS')return new Response(null,{status:allowed?204:403,headers:{...headers,'Access-Control-Allow-Headers':'Content-Type, Authorization','Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Max-Age':'600'}});
-  if(url.pathname==='/health')return Response.json({ok:true,game:'caption-memes',images:100,version:3,modes:['memes','context']},{headers});
+  if(url.pathname==='/health')return Response.json({ok:true,game:'caption-memes',images:100,version:4,modes:['memes','context','spy','mafia']},{headers});
   if(url.pathname.startsWith('/api/')){
    if(!allowed)return Response.json({error:'Источник запроса не разрешён'},{status:403,headers});
    if(request.method!=='POST')return Response.json({error:'Используйте POST'},{status:405,headers});

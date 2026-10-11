@@ -1,4 +1,5 @@
 import {CONTEXT_PROMPTS} from './context.js';
+import {createSecretGames} from './secret-games.js';
 // The server owns every transition. Public state is built separately from stored state.
 export function createGame(db, memes, options = {}) {
  const now = options.now || (() => Date.now());
@@ -16,6 +17,7 @@ export function createGame(db, memes, options = {}) {
  const active = r => r.players.filter(p=>!p.left);
  const online = (p,t) => !p.left && t-p.lastSeen<45000;
  const people = r => r.players.filter(p=>r.participants.includes(p.id));
+ const secret=createSecretGames({fail,shuffle,people,active,online,id,exposure,histories});
  const safeImage = key => {const m=imageMap.get(key);return {id:m.id,path:m.path,width:m.width,height:m.height};};
  function player(name,device,t){
   if(typeof name!=='string')fail('Введите имя.');name=name.trim().replace(/\s+/g,' ');
@@ -27,8 +29,8 @@ export function createGame(db, memes, options = {}) {
   const rounds=data.rounds??previous.rounds,captionSeconds=data.captionSeconds??previous.captionSeconds,mode=data.mode??previous.mode??'memes';
   if(!Number.isInteger(rounds)||rounds<3||rounds>10)fail('Выберите от 3 до 10 раундов.');
   if(![45,60,90,120].includes(captionSeconds))fail('Выберите доступное время на подпись.');
-  if(!['memes','context'].includes(mode))fail('Выберите доступную игру.');
-  return {rounds,captionSeconds,mode};
+  if(!['memes','context','spy','mafia'].includes(mode))fail('Выберите доступную игру.');
+  return {...secret.settings(data,previous),rounds,captionSeconds,mode};
  }
  function chooseDeck(r){
   const history=new Map();
@@ -72,6 +74,7 @@ export function createGame(db, memes, options = {}) {
  function advance(r,t){
   const host=r.players.find(p=>p.id===r.hostId);
   if(!host||host.left||t-host.lastSeen>=90000){const next=active(r).find(p=>online(p,t));if(next)r.hostId=next.id;}
+  secret.advance(r,t);
   if(['caption','answer','twist'].includes(r.phase)){
    const remaining=Object.entries(r.assignments).filter(([key])=>!r.players.find(p=>p.id===key)?.left);
    if(t>=r.deadline||remaining.every(([,a])=>a.submitted)){if(r.phase==='answer')twisting(r,t);else voting(r,t);}
@@ -80,7 +83,8 @@ export function createGame(db, memes, options = {}) {
  }
  function view(r,p,t){
   const mode=r.settings.mode||'memes';
-  const s={game:'caption-memes',mode,code:r.code,phase:r.phase,round:r.round,matchId:r.matchId,settings:{...r.settings,mode},hostId:r.hostId,me:p.id,revision:r.revision,serverTime:t,deadline:r.deadline,players:active(r).map(q=>({id:q.id,name:q.name,score:q.score,ready:q.ready,online:online(q,t)})),minPlayers:3,maxPlayers:12,maxRounds:mode==='context'?Math.min(10,Math.floor(CONTEXT_PROMPTS.length/Math.max(3,active(r).length))):Math.min(10,memes.length)};
+  const s={game:'caption-memes',mode,code:r.code,phase:r.phase,round:r.round,matchId:r.matchId,settings:{...r.settings,mode},hostId:r.hostId,me:p.id,revision:r.revision,serverTime:t,deadline:r.deadline,players:active(r).map(q=>({id:q.id,name:q.name,score:q.score,ready:q.ready,online:online(q,t)})),minPlayers:mode==='spy'&&r.settings.spyCount===2?6:secret.minPlayers(mode),maxPlayers:12,maxRounds:mode==='spy'?Math.min(10,secret.view({...r,phase:'lobby'},p,t).locationCount):mode==='context'?Math.min(10,Math.floor(CONTEXT_PROMPTS.length/Math.max(3,active(r).length))):Math.min(10,memes.length)};
+  if(secret.enabled(r))return {...s,...secret.view(r,p,t)};
   if(r.phase==='caption'){
    const a=r.assignments[p.id];s.image=a?safeImage(a.image):null;s.submitted=!!a?.submitted;s.myCaption=a?.caption??null;s.done=Object.values(r.assignments).filter(a=>a.submitted).length;s.total=Object.keys(r.assignments).length;
   }
@@ -123,10 +127,11 @@ export function createGame(db, memes, options = {}) {
     case 'settings':host();phase('lobby');r.settings=settings(data,r.settings);active(r).forEach(q=>q.ready=false);break;
     case 'ready':phase('lobby');if(typeof data.ready!=='boolean')fail('Некорректная готовность.');p.ready=data.ready;break;
     case 'start':case 'rematch':{
-     host();phase(action==='rematch'?'finished':'lobby');const ps=active(r);if(ps.length<3)fail('Нужно хотя бы 3 игрока.');if(ps.some(q=>!online(q,t)||(action==='start'&&!q.ready)))fail('Дождитесь подключения и готовности всех игроков.');
+     host();phase(action==='rematch'?'finished':'lobby');const ps=active(r),min=r.settings.mode==='spy'&&r.settings.spyCount===2?6:secret.minPlayers(r.settings.mode);if(ps.length<min)fail('Нужно хотя бы '+min+(min===3?' игрока.':' игроков.'));if(ps.some(q=>!online(q,t)||(action==='start'&&!q.ready)))fail('Дождитесь подключения и готовности всех игроков.');
      if(r.settings.mode==='context'&&r.settings.rounds*ps.length>CONTEXT_PROMPTS.length)fail('В банке недостаточно вопросов для такой партии.');
-     if(r.settings.mode!=='context'&&r.settings.rounds>memes.length)fail('В банке недостаточно картинок для такого количества раундов.');
-     r.participants=ps.map(q=>q.id);r.round=0;r.matchId=id();ps.forEach(q=>q.score=0);if(r.settings.mode==='context')r.promptDeck=shuffle(CONTEXT_PROMPTS.map((_,i)=>i));else r.deck=chooseDeck(r);startRound(r,t);break;
+     if(!secret.enabled(r)&&r.settings.mode!=='context'&&r.settings.rounds>memes.length)fail('В банке недостаточно картинок для такого количества раундов.');
+     if(r.settings.mode==='spy'&&r.settings.rounds>secret.view({...r,phase:'lobby'},p,t).locationCount)fail('В выбранном наборе недостаточно локаций для такого количества раундов.');
+     r.participants=ps.map(q=>q.id);r.round=0;r.matchId=id();ps.forEach(q=>q.score=0);if(secret.enabled(r)){secret.start(r,t);break;}if(r.settings.mode==='context')r.promptDeck=shuffle(CONTEXT_PROMPTS.map((_,i)=>i));else r.deck=chooseDeck(r);startRound(r,t);break;
     }
     case 'caption':{
      if(r.settings.mode==='context')fail('Этот этап уже закончился. Обновляем игру.',409);
@@ -146,11 +151,12 @@ export function createGame(db, memes, options = {}) {
      if(r.votes[p.id]){if(r.votes[p.id]===e.id)break;fail('Голос уже отправлен.',409);}r.votes[p.id]=e.id;break;
     }
     case 'next':host();phase('results');round();if(r.round>=r.settings.rounds){r.phase='finished';r.deadline=null;}else startRound(r,t);break;
-    case 'replay':case 'lobby':host();phase('finished');r.phase='lobby';r.players=r.players.filter(q=>!q.left);r.players.forEach(q=>{q.ready=false;q.score=0;});r.round=0;r.matchId=id();r.participants=[];r.assignments={};r.entries=[];r.votes={};r.winners=[];r.deadline=null;break;
+    case 'replay':case 'lobby':host();phase('finished');r.phase='lobby';r.players=r.players.filter(q=>!q.left);r.players.forEach(q=>{q.ready=false;q.score=0;});r.round=0;r.matchId=id();r.participants=[];r.assignments={};r.entries=[];r.votes={};r.winners=[];r.deadline=null;r.secret=null;break;
     case 'kick':{
      host();phase('lobby');const q=r.players.find(q=>q.id===data.playerId&&!q.left);if(!q||q.id===p.id)fail('Игрок недоступен.');q.left=true;break;
     }
     case 'leave':p.left=true;break;
+    case 'secret-next':case 'spy-turn':case 'spy-guess':case 'spy-ballot':case 'mafia-act':case 'mafia-ballot':case 'mafia-chat':secret.action(r,p,action,data,t,host);break;
     default:fail('Неизвестное действие.',404);
    }
    advance(r,t);r.revision++;r.touched=t;save.run(r.code,JSON.stringify(r),t);
