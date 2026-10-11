@@ -2,17 +2,18 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f2ede4"><meta name="description" content="Придумай подпись к мему, проголосуй за друзей и стань самым смешным в комнате. Бесплатная игра по коду для 3–12 человек.">
+<meta name="theme-color" content="#FAFAF5"><meta name="description" content="Придумай подпись к мему, проголосуй за друзей и стань самым смешным в комнате. Бесплатная игра по коду для 3–12 человек.">
 <title>Подпиши это! — мемы с друзьями</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23744bea'/%3E%3Ctext x='32' y='47' font-size='45' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E!%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=memes2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232457C5'/%3E%3Ctext x='32' y='47' font-size='45' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E!%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/design/manrope-800.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="style.css?v=minion1">
 </head>
 <body>
-<header class="site-header"><a class="brand" href="./" aria-label="Подпиши это — главная"><span class="brand-icon">!</span>подпиши это<span class="brand-dot">.</span></a><div class="header-right"><span class="edition">ИГРА ДЛЯ СВОИХ</span><button id="rules-open" class="text-button">Как играть ↗</button></div></header>
+<header class="site-header"><a class="brand" href="./" aria-label="Подпиши это — главная"><span class="brand-icon">!</span>подпиши это<span class="brand-dot">.</span></a><nav class="header-nav" aria-label="Навигация"><a class="nav-pill home-nav" href="#how">Как играем</a><a class="nav-pill home-nav" href="#memes">Мемы</a><button id="rules-open" class="nav-pill">Правила ↗</button></nav><button id="header-play" class="button header-play">Играть ↗</button></header>
 <main id="app"><p class="loading">Собираем мемы…</p></main>
 <div id="connection" class="connection" role="status" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
 <dialog id="rules" aria-labelledby="rules-title"><button class="dialog-close" id="rules-close" aria-label="Закрыть правила">×</button><span class="eyebrow">Всё просто</span><h2 id="rules-title">Смешнее — лучше.</h2><ol class="rules-list"><li><b>Соберите друзей.</b> 3–12 человек, каждый со своего телефона или компьютера. Один создаёт комнату, остальные заходят по коду.</li><li><b>Подпишите картинку.</b> В каждом раунде у всех одна и та же картинка. В следующем — новая. Придумайте одну подпись до 200 символов. Можно пропустить.</li><li><b>Выберите самую смешную подпись.</b> Авторы скрыты. Голосуйте за одну чужую подпись; свой голос изменить нельзя.</li><li><b>Заберите балл.</b> Самая популярная подпись получает +1. При ничьей балл получают все лидеры. Без голосов баллы не начисляются.</li></ol><p class="muted">Ведущий выбирает раунды и время. Картинки не повторяются в партии. Между партиями сначала показываем ещё не виденные участниками; после исчерпания банка из 100 картинок возможны повторы.</p><p class="muted">Обновление страницы сохраняет вход и черновик. Если ведущий отключится на 90 секунд, роль перейдёт другому игроку.</p><a class="source-link" href="memes.json" target="_blank" rel="noopener">100 картинок и их источники: Imgflip ↗</a></dialog>
 <noscript>Для игры включите JavaScript в браузере.</noscript>
-<script src="config.js?v=memes2"></script><script type="module" src="app.js?v=memes4"></script>
+<script src="config.js?v=memes2"></script><script type="module" src="app.js?v=minion1"></script>
 </body></html>

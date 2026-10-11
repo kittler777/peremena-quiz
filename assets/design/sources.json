@@ -1,0 +1,17 @@
+{
+  "character": {
+    "page": "https://www.illumination.com/movie/minions/",
+    "hero": "https://www.illumination.com/wp-content/uploads/2019/11/Minions_Kevin2.png",
+    "peek": "https://www.illumination.com/wp-content/themes/illumination/assets/images/bumper_minion.png",
+    "credit": "Minions © Universal Studios / Illumination. Original images downloaded without modification."
+  },
+  "fonts": {
+    "source": "https://fonts.google.com/",
+    "families": [
+      "Manrope",
+      "Bad Script"
+    ],
+    "license": "SIL Open Font License 1.1; license texts included"
+  },
+  "doodles": "Original SVG drawn for Подпиши это!"
+}
