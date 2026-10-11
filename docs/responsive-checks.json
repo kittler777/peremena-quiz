@@ -1,0 +1,386 @@
+[
+  {
+    "screen": "home-final",
+    "width": "360",
+    "client": 345,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/design/minion-kevin.png"
+      }
+    ],
+    "overflow": [],
+    "scroll": 345,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "home-final",
+    "width": "390",
+    "client": 375,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/design/minion-kevin.png"
+      }
+    ],
+    "overflow": [],
+    "scroll": 375,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "home-final",
+    "width": "768",
+    "client": 753,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/design/minion-kevin.png"
+      }
+    ],
+    "overflow": [],
+    "scroll": 753,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "home-final",
+    "width": "1440",
+    "client": 1425,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/design/minion-kevin.png"
+      }
+    ],
+    "overflow": [],
+    "scroll": 1425,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "lobby-final",
+    "width": "360",
+    "client": 345,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 345,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "lobby-final",
+    "width": "390",
+    "client": 375,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 375,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "lobby-final",
+    "width": "768",
+    "client": 753,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 753,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "lobby-final",
+    "width": "1440",
+    "client": 1425,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 1425,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "caption",
+    "width": "360",
+    "client": 345,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 345,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "caption",
+    "width": "390",
+    "client": 375,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 375,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "caption",
+    "width": "768",
+    "client": 753,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 753,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "caption",
+    "width": "1440",
+    "client": 1425,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 1425,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "vote",
+    "width": "360",
+    "client": 345,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 345,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "vote",
+    "width": "390",
+    "client": 375,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 375,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "vote",
+    "width": "768",
+    "client": 753,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 753,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "vote",
+    "width": "1440",
+    "client": 1440,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 1440,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "results",
+    "width": "360",
+    "client": 345,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 345,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "results",
+    "width": "390",
+    "client": 375,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 375,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "results",
+    "width": "768",
+    "client": 753,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 753,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "results",
+    "width": "1440",
+    "client": 1425,
+    "headerOverlap": false,
+    "images": [
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      },
+      {
+        "loaded": true,
+        "src": "./assets/memes/m155067746.jpg"
+      }
+    ],
+    "overflow": [],
+    "scroll": 1425,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "finished",
+    "width": "360",
+    "client": 345,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 345,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "finished",
+    "width": "390",
+    "client": 375,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 375,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "finished",
+    "width": "768",
+    "client": 753,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 753,
+    "stylesheet": "style.css?v=minion2"
+  },
+  {
+    "screen": "finished",
+    "width": "1440",
+    "client": 1425,
+    "headerOverlap": false,
+    "images": [],
+    "overflow": [],
+    "scroll": 1425,
+    "stylesheet": "style.css?v=minion2"
+  }
+]
