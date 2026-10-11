@@ -1,4 +1,4 @@
-import {secretSettings,secretScreen,secretDescription} from './secret-ui.js';
+import {secretSettings,secretScreen,secretDescription} from './secret-ui.js?v=party4a';
 const app=document.querySelector('#app');
 const API=(window.PEREMENA_API||'').replace(/\/$/,'');
 const imageBase=location.hostname.endsWith('up.railway.app')?'https://kittler777.github.io/peremena-quiz/':'./';
