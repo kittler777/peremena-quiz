@@ -1,3 +1,4 @@
+import {CONTEXT_PROMPTS} from './context.js';
 // The server owns every transition. Public state is built separately from stored state.
 export function createGame(db, memes, options = {}) {
  const now = options.now || (() => Date.now());
@@ -23,10 +24,11 @@ export function createGame(db, memes, options = {}) {
   return {id:id(),token:id()+id(),device,name,score:0,ready:false,lastSeen:t,left:false};
  }
  function settings(data, previous={rounds:5,captionSeconds:60}){
-  const rounds=data.rounds??previous.rounds,captionSeconds=data.captionSeconds??previous.captionSeconds;
+  const rounds=data.rounds??previous.rounds,captionSeconds=data.captionSeconds??previous.captionSeconds,mode=data.mode??previous.mode??'memes';
   if(!Number.isInteger(rounds)||rounds<3||rounds>10)fail('Выберите от 3 до 10 раундов.');
   if(![45,60,90,120].includes(captionSeconds))fail('Выберите доступное время на подпись.');
-  return {rounds,captionSeconds};
+  if(!['memes','context'].includes(mode))fail('Выберите доступную игру.');
+  return {rounds,captionSeconds,mode};
  }
  function chooseDeck(r){
   const history=new Map();
@@ -37,15 +39,26 @@ export function createGame(db, memes, options = {}) {
  function startRound(r,t){
   r.round++;r.phase='caption';r.deadline=t+r.settings.captionSeconds*1000;r.assignments={};r.entries=[];r.votes={};r.winners=[];r.resultReason='';
   const players=people(r).filter(p=>!p.left);
+  if(r.settings.mode==='context'){
+   for(const p of players){const prompt=r.promptDeck.shift();if(prompt===undefined)fail('Вопросы закончились. Вернитесь в лобби.',409);r.assignments[p.id]={prompt,caption:null,submitted:false};}
+   r.phase='answer';return;
+  }
   const image=r.deck.shift();if(!image)fail('В банке закончились картинки. Вернитесь в лобби.',409);
   for(const p of players)r.assignments[p.id]={image,caption:null,submitted:false};
   // One shared picture per round; remember its exposure for every participant.
   for(const p of players)exposure.run(p.device,image,t);
  }
  function voting(r,t){
-  r.entries=shuffle(Object.entries(r.assignments).filter(([,a])=>a.submitted&&a.caption).map(([owner,a])=>({id:id(),owner,image:a.image,caption:a.caption})));
+  r.entries=shuffle(Object.entries(r.assignments).filter(([,a])=>a.submitted&&a.caption).map(([owner,a])=>({id:id(),owner,...(r.settings.mode==='context'?{quote:a.quote,quoteOwner:a.quoteOwner}:{image:a.image}),caption:a.caption})));
   if(!r.entries.length){results(r,t);return;}
   r.phase='vote';r.deadline=t+45000;
+ }
+ function twisting(r,t){
+  const players=shuffle(people(r).filter(p=>!p.left)),answers=r.assignments;
+  r.assignments=Object.fromEntries(players.map(p=>[p.id,{quote:null,caption:null,submitted:true}]));
+  if(players.length>1)players.forEach((p,i)=>{const a=answers[p.id];if(a?.submitted&&a.caption)r.assignments[players[(i+1)%players.length].id]={quote:a.caption,quoteOwner:p.id,caption:null,submitted:false};});
+  if(!Object.values(r.assignments).some(a=>a.quote)){results(r,t);return;}
+  r.phase='twist';r.deadline=t+r.settings.captionSeconds*1000;
  }
  function results(r,t){
   const counts=Object.fromEntries(r.entries.map(e=>[e.id,0]));for(const vote of Object.values(r.votes))if(vote in counts)counts[vote]++;
@@ -59,19 +72,24 @@ export function createGame(db, memes, options = {}) {
  function advance(r,t){
   const host=r.players.find(p=>p.id===r.hostId);
   if(!host||host.left||t-host.lastSeen>=90000){const next=active(r).find(p=>online(p,t));if(next)r.hostId=next.id;}
-  if(r.phase==='caption'){
+  if(['caption','answer','twist'].includes(r.phase)){
    const remaining=Object.entries(r.assignments).filter(([key])=>!r.players.find(p=>p.id===key)?.left);
-   if(t>=r.deadline||remaining.every(([,a])=>a.submitted))voting(r,t);
+   if(t>=r.deadline||remaining.every(([,a])=>a.submitted)){if(r.phase==='answer')twisting(r,t);else voting(r,t);}
   }
   if(r.phase==='vote'&&(t>=r.deadline||eligibleVoters(r).every(p=>r.votes[p.id])))results(r,t);
  }
  function view(r,p,t){
-  const s={game:'caption-memes',code:r.code,phase:r.phase,round:r.round,matchId:r.matchId,settings:r.settings,hostId:r.hostId,me:p.id,revision:r.revision,serverTime:t,deadline:r.deadline,players:active(r).map(q=>({id:q.id,name:q.name,score:q.score,ready:q.ready,online:online(q,t)})),minPlayers:3,maxPlayers:12,maxRounds:Math.min(10,memes.length)};
+  const mode=r.settings.mode||'memes';
+  const s={game:'caption-memes',mode,code:r.code,phase:r.phase,round:r.round,matchId:r.matchId,settings:{...r.settings,mode},hostId:r.hostId,me:p.id,revision:r.revision,serverTime:t,deadline:r.deadline,players:active(r).map(q=>({id:q.id,name:q.name,score:q.score,ready:q.ready,online:online(q,t)})),minPlayers:3,maxPlayers:12,maxRounds:mode==='context'?Math.min(10,Math.floor(CONTEXT_PROMPTS.length/Math.max(3,active(r).length))):Math.min(10,memes.length)};
   if(r.phase==='caption'){
    const a=r.assignments[p.id];s.image=a?safeImage(a.image):null;s.submitted=!!a?.submitted;s.myCaption=a?.caption??null;s.done=Object.values(r.assignments).filter(a=>a.submitted).length;s.total=Object.keys(r.assignments).length;
   }
+  if(['answer','twist'].includes(r.phase)){
+   const a=r.assignments[p.id];s.prompt=r.phase==='answer'&&a?CONTEXT_PROMPTS[a.prompt]:null;s.quote=r.phase==='twist'?a?.quote??null:null;
+   s.submitted=!!a?.submitted;s.myCaption=a?.caption??null;s.done=Object.values(r.assignments).filter(a=>a.submitted).length;s.total=Object.keys(r.assignments).length;
+  }
   if(['vote','results','finished'].includes(r.phase)){
-   s.cards=r.entries.map(e=>({id:e.id,image:safeImage(e.image),caption:e.caption,own:e.owner===p.id,...(r.phase!=='vote'?{author:r.players.find(q=>q.id===e.owner)?.name||'Участник',authorId:e.owner,votes:e.votes,winner:r.winners.includes(e.owner)}:{})}));
+   s.cards=r.entries.map(e=>({id:e.id,...(mode==='context'?{quote:e.quote}:{image:safeImage(e.image)}),caption:e.caption,own:e.owner===p.id,...(r.phase!=='vote'?{author:r.players.find(q=>q.id===e.owner)?.name||'Участник',authorId:e.owner,...(mode==='context'?{quotedAuthor:r.players.find(q=>q.id===e.quoteOwner)?.name||'Участник'}:{}),votes:e.votes,winner:r.winners.includes(e.owner)}:{})}));
    s.voted=!!r.votes[p.id];s.myVote=r.votes[p.id]||null;s.canVote=r.phase==='vote'&&eligibleVoters(r).some(q=>q.id===p.id)&&!s.voted;s.done=eligibleVoters(r).filter(q=>r.votes[q.id]).length;s.total=eligibleVoters(r).length;
   }
   if(['results','finished'].includes(r.phase)){s.winners=r.winners;s.resultReason=r.resultReason;s.leaderboard=people(r).map(q=>({id:q.id,name:q.name,score:q.score,left:q.left})).sort((a,b)=>b.score-a.score);}
@@ -104,16 +122,23 @@ export function createGame(db, memes, options = {}) {
     case 'create':case 'join':case 'state':break;
     case 'settings':host();phase('lobby');r.settings=settings(data,r.settings);active(r).forEach(q=>q.ready=false);break;
     case 'ready':phase('lobby');if(typeof data.ready!=='boolean')fail('Некорректная готовность.');p.ready=data.ready;break;
-    case 'start':{
-     host();phase('lobby');const ps=active(r);if(ps.length<3)fail('Нужно хотя бы 3 игрока.');if(ps.some(q=>!online(q,t)||!q.ready))fail('Дождитесь подключения и готовности всех игроков.');
-     if(r.settings.rounds>memes.length)fail('В банке недостаточно картинок для такого количества раундов.');
-     r.participants=ps.map(q=>q.id);r.round=0;r.matchId=id();ps.forEach(q=>q.score=0);r.deck=chooseDeck(r);startRound(r,t);break;
+    case 'start':case 'rematch':{
+     host();phase(action==='rematch'?'finished':'lobby');const ps=active(r);if(ps.length<3)fail('Нужно хотя бы 3 игрока.');if(ps.some(q=>!online(q,t)||(action==='start'&&!q.ready)))fail('Дождитесь подключения и готовности всех игроков.');
+     if(r.settings.mode==='context'&&r.settings.rounds*ps.length>CONTEXT_PROMPTS.length)fail('В банке недостаточно вопросов для такой партии.');
+     if(r.settings.mode!=='context'&&r.settings.rounds>memes.length)fail('В банке недостаточно картинок для такого количества раундов.');
+     r.participants=ps.map(q=>q.id);r.round=0;r.matchId=id();ps.forEach(q=>q.score=0);if(r.settings.mode==='context')r.promptDeck=shuffle(CONTEXT_PROMPTS.map((_,i)=>i));else r.deck=chooseDeck(r);startRound(r,t);break;
     }
     case 'caption':{
+     if(r.settings.mode==='context')fail('Этот этап уже закончился. Обновляем игру.',409);
      phase('caption');round();const a=r.assignments[p.id];if(!a)fail('Вы не участвуете в этом раунде.',403);
      if(typeof data.caption!=='string')fail('Напишите подпись.');const caption=data.caption.trim();if(Array.from(caption).length>200)fail('Подпись должна быть не длиннее 200 символов.');
      if(a.submitted){if(a.caption===caption)break;fail('Подпись уже отправлена.',409);}
      a.caption=caption;a.submitted=true;break;
+    }
+    case 'answer':case 'twist':{
+     phase(action);round();const a=r.assignments[p.id];if(!a||action==='twist'&&!a.quote)fail('Сейчас у вас нет задания. Ждите остальных.',403);
+     if(typeof data.caption!=='string')fail('Напишите текст.');const caption=data.caption.trim();if(Array.from(caption).length>200)fail('Текст должен быть не длиннее 200 символов.');
+     if(a.submitted){if(a.caption===caption)break;fail('Текст уже отправлен.',409);}a.caption=caption;a.submitted=true;break;
     }
     case 'vote':{
      phase('vote');round();const e=r.entries.find(q=>q.id===data.cardId);if(!e)fail('Эта подпись недоступна.',404);if(e.owner===p.id)fail('За свою подпись голосовать нельзя.');
@@ -121,7 +146,7 @@ export function createGame(db, memes, options = {}) {
      if(r.votes[p.id]){if(r.votes[p.id]===e.id)break;fail('Голос уже отправлен.',409);}r.votes[p.id]=e.id;break;
     }
     case 'next':host();phase('results');round();if(r.round>=r.settings.rounds){r.phase='finished';r.deadline=null;}else startRound(r,t);break;
-    case 'replay':host();phase('finished');r.phase='lobby';r.players=r.players.filter(q=>!q.left&&online(q,t));r.players.forEach(q=>{q.ready=false;q.score=0;});r.round=0;r.matchId=id();r.participants=[];break;
+    case 'replay':case 'lobby':host();phase('finished');r.phase='lobby';r.players=r.players.filter(q=>!q.left);r.players.forEach(q=>{q.ready=false;q.score=0;});r.round=0;r.matchId=id();r.participants=[];r.assignments={};r.entries=[];r.votes={};r.winners=[];r.deadline=null;break;
     case 'kick':{
      host();phase('lobby');const q=r.players.find(q=>q.id===data.playerId&&!q.left);if(!q||q.id===p.id)fail('Игрок недоступен.');q.left=true;break;
     }
