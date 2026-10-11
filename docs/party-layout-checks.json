@@ -1,0 +1,343 @@
+{
+  "checks": [
+    {
+      "screen": "home",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "home",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "home",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "home",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "spy-lobby",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "spy-lobby",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "spy-lobby",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "spy-lobby",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "spy-discuss",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "spy-discuss",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "spy-discuss",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "spy-discuss",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "spy-vote",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 360,
+      "width": 360
+    },
+    {
+      "screen": "spy-vote",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 390,
+      "width": 390
+    },
+    {
+      "screen": "spy-vote",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 768,
+      "width": 768
+    },
+    {
+      "screen": "spy-vote",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1440,
+      "width": 1440
+    },
+    {
+      "screen": "spy-results",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "spy-results",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "spy-results",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "spy-results",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "mafia-lobby",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "mafia-lobby",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "mafia-lobby",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "mafia-lobby",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "mafia-night",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "mafia-night",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "mafia-night",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "mafia-night",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "mafia-day",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "mafia-day",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "mafia-day",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "mafia-day",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "mafia-vote",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "mafia-vote",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "mafia-vote",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "mafia-vote",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "mafia-verdict",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "mafia-verdict",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "mafia-verdict",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "mafia-verdict",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "mafia-finished",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "mafia-finished",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "mafia-finished",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 753,
+      "width": 753
+    },
+    {
+      "screen": "mafia-finished",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1425,
+      "width": 1425
+    },
+    {
+      "screen": "spy-finished",
+      "viewport": 360,
+      "overflow": [],
+      "scroll": 345,
+      "width": 345
+    },
+    {
+      "screen": "spy-finished",
+      "viewport": 390,
+      "overflow": [],
+      "scroll": 375,
+      "width": 375
+    },
+    {
+      "screen": "spy-finished",
+      "viewport": 768,
+      "overflow": [],
+      "scroll": 768,
+      "width": 768
+    },
+    {
+      "screen": "spy-finished",
+      "viewport": 1440,
+      "overflow": [],
+      "scroll": 1440,
+      "width": 1440
+    }
+  ],
+  "initialIssue": "1px overflow on Spy final at 360px",
+  "resolution": "Responsive final header; verified no overflow",
+  "publicParty": "Spy: three players, shared location, voting, guesses, scores, reload. Mafia: five players, private chat/check, healing, dead observer, voting, city victory and rematch."
+}
